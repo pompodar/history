@@ -174,8 +174,8 @@ get_header();
         margin-left: auto;
         color: white;
         text-align: left;
-        margin-top: 0 !important;
-        margin-bottmom: 0 !important;
+        margin-top: 40px !important;
+        margin-bottom: 0 !important;
     }
 
     .breadcrumb {
@@ -448,6 +448,9 @@ generate_nav_menu();
                 
                 base.$el.on("click", "a."+base.options.classPrefix+'back', function () {
                     base.goToParent();
+
+                    updateBreadcumb(this.textContent, true);
+
                     return false;
                 });
                 
