@@ -5,15 +5,31 @@ Template Name: Custom Template
 get_header();
 ?>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marck+Script&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Infant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
 <style>
     body {
-        font-family:"Helvetica Neue",sans-serif;
+        font-family: "Cormorant Infant", serif !important;
+        font-weight: 400;
+        font-style: normal;
+        background: white !important;
         margin:0;
         padding:2em;
         text-align:center;
         height:100%;
         display: flex;
         flex-direction: row;
+    }
+
+    #page {
+      max-width: 1560px;
+      margin: 0 auto;
+      display: flex !important;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
     header {
@@ -24,6 +40,12 @@ get_header();
 
     main {
       display: flex;
+    }
+
+    @media screen and (max-width: 1024px) {
+      main {
+        flex-direction: column;
+      }      
     }
 
     ::selection {
@@ -42,21 +64,24 @@ get_header();
     }
 
     .site-title a  {
-        color:#fff !important;
+        font-family: "Marck Script", cursive !important;
+        color: black !important;
         text-shadow:2px 2px 5px rgba(0,0,0,.5);
         padding: 0 !important;
         padding-top: 0 !important;
         font-size:1.75em;
         display:inline-block;
+        text-decoration-color: aqua;
     }
 
-    h1:after {
-        content:"";
-        position:absolute;
-        bottom:-21px;
-        left:50%;
-        border:10px solid transparent;
-        border-top-color:rgba(255,255,255,.2);
+    h1 {
+      font-size: 32px;
+      font-family: "Cormorant Infant", serif !important;
+      text-align: center;
+    }
+
+    p {
+      text-indent: 12px;
     }
 
     nav {
@@ -64,14 +89,14 @@ get_header();
         position:relative;
         max-width:480px;
         text-align:left;
-        background: #131515;
+        background: aquamarine;
     }
 
     nav ul {
         padding:0;
         margin:0;
         list-style:none;
-        background:#343838;
+        background: grey;
         transition:all .3s ease-in-out;
         -o-transition:all .3s ease-in-out;
         -moz-transition:all .3s ease-in-out;
@@ -93,7 +118,9 @@ get_header();
 
     nav ul li a {
         display:block;
-        padding:2em;
+        font-family: "Cormorant Infant", serif !important;
+        font-family: "Marck Script", cursive !important;
+        padding: 12px;
         white-space:nowrap;
         background-image: -webkit-gradient(linear, 0 0, 0 100%, from(rgba(0,0,0,0.45)), to(rgba(0,0,0,.65)));
         background-image: -webkit-linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,.65));
@@ -108,13 +135,14 @@ get_header();
 
     nav ul li a strong {
         float:right;
-        font-size:.6em;
-        margin-top:.25em
+        font-size: 1em;
+        margin-top:.10em;
+        color: aqua;
     }
 
     nav ul li a.slider-back {
-        color:#00e2ff;
-        background:rgba(0,0,0,.35);
+        color: white;
+        background: aqua;
         text-align:right
     }
 
@@ -135,15 +163,11 @@ get_header();
     nav ul li ul.slider-right { left:200% }
 
     nav ul li.about a { border-left-color:rgba(0,226,255,.85) }
-    nav ul li.products a { border-left-color:rgba(0,226,255,.65) }
-    nav ul li.blog a { border-left-color:rgba(0,226,255,.45) }
-    nav ul li.resources a { border-left-color:rgba(0,226,255,.3) }
-    nav ul li.contact a { border-left-color:rgba(0,226,255,.125) }
 
     nav ul li a:hover {
-        background:rgba(0,0,0,.35);
-        color:#fff;
-        border-left-color:#00e2ff
+        background: white;
+        color: black;
+        border-left-color: aqua;
     }
 
     @media(min-width: 600px) {
@@ -161,27 +185,44 @@ get_header();
 
     .sidebar {
         position: fixed;
-        width: 25%;
-        height: 500px;
+        width: 392px;
+        height: fit-content;
+        max-height: 800px;
         overflow: auto;
         margin-top: 60px !important;
         margin-bottom: 0 !important;
     }
 
+    @media screen and (max-width: 1024px) {
+      .sidebar {
+          position: static;      
+        }      
+    }
+
     .main-content {
         width: 75%;
-        padding-left: 60px;
-        margin-left: auto;
-        color: white;
+        margin-left: 430px;
+        color: black;
         text-align: left;
-        margin-top: 40px !important;
+        margin-top: 60px !important;
         margin-bottom: 0 !important;
+        padding: 20px;
+        background: white;
+    }
+
+    @media screen and (max-width: 1024px) {
+      .main-content {
+          width: 100%;   
+          margin-left: 0;  
+          margin-top: -40px !important; 
+        }      
     }
 
     .breadcrumb {
-        margin-left: 140px;
+        margin-left: 180px;
+        font-family: "Marck Script", cursive !important;
         position: fixed;
-        color: #fff;
+        color: black;
         z-index: 1;
         margin-top: -10px !important;
     }
@@ -194,7 +235,30 @@ get_header();
     .breadcrumb a:hover {
         text-decoration: underline;
     }
+
+    .decorative-background {
+      position: fixed;
+      top: -100px;
+      left: 0;
+      right: 0;
+      height: 250px;
+      width: 100%;
+      background: grey;
+      z-index: -1;
+      background: grey;
+      background: linear-gradient(100deg, white 0%, aqua 90%);
+    }
+
+    .site-footer > .site-info {
+      border-top: 3px solid aqua !important;
+    }
+
+    footer {
+      margin-top: auto !important;
+    }
 </style>
+
+<div class="decorative-background"></div>
 
 <div class="sidebar">
 <?php
@@ -267,6 +331,14 @@ generate_nav_menu();
 </div>
 
 <div class="main-content">
+  <h1>
+    Історія
+  </h1>
+  <p>
+    Зазвичай говорять про “систему трьох епох”: кам’яної, залізної і бронзової. Цей поділ ввів у 1836 році данський археолог Крістіан Томсен; це система часових відносин, заснована на критеріях розвитку знарядь праці, які використовували первісні люди.
+
+    Н. Дейвіс Європа. Історія
+  </p>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -398,12 +470,14 @@ generate_nav_menu();
 
                 function updateBreadcumb ($t, isBack = false) {
                     var breadcrumb = $('.breadcrumb');
-                    var currentPath = breadcrumb.text().split(' > ');
+
+                    var currentPath = breadcrumb.text()
+                    .split(' > ');
 
                     if (isBack) {
                         currentPath.pop();
                     } else {
-                        currentPath.push($t);
+                        currentPath.push($t.replace('>', ''));
                     }
 
                     breadcrumb.html(currentPath.join(' > '));
@@ -417,7 +491,6 @@ generate_nav_menu();
                           if (data) {
                             console.log(data);
                               var post = data;
-                              // Display post content in the main content area
                               $('.main-content').html(`<h1>${post.title.rendered}</h1>${post.content.rendered}`);
                           } else {
                               $('.main-content').html('<p>No post found.</p>');
@@ -439,7 +512,7 @@ generate_nav_menu();
                 base.$el.on("click", "a."+base.options.classPrefix+'more', function() {
                     base.goToNext($(this));
 
-                    fetchPostContentByTitle(this.id);
+                    // fetchPostContentByTitle(this.id);
 
                     updateBreadcumb(this.textContent);
 
@@ -477,9 +550,9 @@ generate_nav_menu();
     $.responsive.slider.defaultOptions = {
         classPrefix: 'slider-',
         transitionTime: 200,
-        backWording: "Back to",
-        moreArrow: "&#x25B6;",
-        prevArrow: "&#x25C0;",
+        backWording: "назад до",
+        moreArrow: ">",
+        prevArrow: ">",
         initPlugin: true
         // TODO: Add option for max levels
     };
