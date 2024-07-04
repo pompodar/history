@@ -16,6 +16,12 @@ get_header();
         flex-direction: row;
     }
 
+    header {
+      margin-left: unset !important;
+      width: max-content;
+      position: fixed;
+    }
+
     main {
       display: flex;
     }
@@ -28,6 +34,11 @@ get_header();
     .site-header {
       padding-top: 0 !important;
       padding-bottom: 0 !important;
+    }
+
+    .site-title  {
+      text-align: left;
+      text-transform: none;
     }
 
     .site-title a  {
@@ -149,18 +160,39 @@ get_header();
     }
 
     .sidebar {
+        position: fixed;
         width: 25%;
         height: 500px;
         overflow: auto;
-        margin-top: 0 !important;
+        margin-top: 60px !important;
         margin-bottom: 0 !important;
     }
 
     .main-content {
         width: 75%;
-        padding-left: 20px;
+        padding-left: 60px;
+        margin-left: auto;
         color: white;
         text-align: left;
+        margin-top: 0 !important;
+        margin-bottmom: 0 !important;
+    }
+
+    .breadcrumb {
+        margin-left: 140px;
+        position: fixed;
+        color: #fff;
+        z-index: 1;
+        margin-top: -10px !important;
+    }
+
+    .breadcrumb a {
+        color: #00e2ff;
+        text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+        text-decoration: underline;
     }
 </style>
 
@@ -229,6 +261,9 @@ function generate_nav_menu() {
 // Use the function in a template file where you want the menu to appear
 generate_nav_menu();
 ?>
+</div>
+
+<div class="breadcrumb">
 </div>
 
 <div class="main-content">
@@ -361,6 +396,19 @@ generate_nav_menu();
                     }
                 });
 
+                function updateBreadcumb ($t, isBack = false) {
+                    var breadcrumb = $('.breadcrumb');
+                    var currentPath = breadcrumb.text().split(' > ');
+
+                    if (isBack) {
+                        currentPath.pop();
+                    } else {
+                        currentPath.push($t);
+                    }
+
+                    breadcrumb.html(currentPath.join(' > '));
+                };
+
                 function fetchPostContentByTitle(postId) {
                   $.ajax({
                       url: `/wp-json/wp/v2/posts/${postId}`,
@@ -381,12 +429,19 @@ generate_nav_menu();
                       }
                   });
               }
+
+                base.$el.on("click", "a", function() {
+                    fetchPostContentByTitle(this.id);
+
+                    return false;
+                });
             
                 base.$el.on("click", "a."+base.options.classPrefix+'more', function() {
                     base.goToNext($(this));
-                    console.log(this.id);
 
                     fetchPostContentByTitle(this.id);
+
+                    updateBreadcumb(this.textContent);
 
                     return false;
                 });
