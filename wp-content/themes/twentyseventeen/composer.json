@@ -1,0 +1,21 @@
+{
+    "name": "svytoslav/test-parent-theme",
+    "description": "Test Parent Theme",
+    "type": "wordpress-theme",
+    "authors": [
+        {
+            "name": "Svyatoslav",
+            "email": "poedgar@ukr.net"
+        }
+    ],
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "gregwar/formidable": "dev-master",
+        "gregwar/captcha": "1.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "includes/"
+        }
+    }
+}
