@@ -78,10 +78,30 @@ get_header();
       font-size: 32px;
       font-family: "Cormorant Infant", serif !important;
       text-align: center;
+      position: relative;
+      width: max-content;
+      display: block;
+      margin: 0 auto;
+    }
+
+    h1:before {
+      content: "";
+      display: block;
+      width: 34px;
+      height: 3px;
+      background: yellow;
+      left: 0;
+      top: 34px;
+      position: absolute;
     }
 
     p {
       text-indent: 12px;
+    }
+
+    p:first-of-type:first-letter {
+      font-size: 28px;
+      line-height: 1;
     }
 
     nav {
@@ -185,12 +205,14 @@ get_header();
 
     .sidebar {
         position: fixed;
-        width: 392px;
+        width: 100%;
+        max-width: 392px;
         height: fit-content;
         max-height: 800px;
         overflow: auto;
         margin-top: 60px !important;
         margin-bottom: 0 !important;
+        box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
     }
 
     @media screen and (max-width: 1024px) {
@@ -208,13 +230,55 @@ get_header();
         margin-bottom: 0 !important;
         padding: 20px;
         background: white;
+        position: relative;
+        box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    }
+
+    .main-content:before {
+        content: "";
+        height: 30px;
+        width: 6px;
+        position: absolute;
+        right: -4px;
+        top: 2px;
+        background: yellow;
+    }
+
+    .main-content:after {
+        content: "";
+        width: 40px;
+        height: 6px;
+        position: absolute;
+        right: -4px;
+        top: -4px;
+        background: yellow;
+    }
+
+    nav:before {
+        content: "";
+        height: 30px;
+        width: 6px;
+        position: absolute;
+        left: -4px;
+        top: 2px;
+        background: yellow;
+    }
+
+    nav:after {
+        content: "";
+        width: 40px;
+        height: 6px;
+        position: absolute;
+        left: -4px;
+        top: -4px;
+        background: yellow;
     }
 
     @media screen and (max-width: 1024px) {
       .main-content {
           width: 100%;   
           margin-left: 0;  
-          margin-top: -40px !important; 
+          margin-top: 40px !important; 
         }      
     }
 
@@ -247,6 +311,23 @@ get_header();
       z-index: -1;
       background: grey;
       background: linear-gradient(100deg, white 0%, aqua 90%);
+      background-image: url("https://static.posters.cz/image/750webp/116430.webp");
+      /* background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgHgL8PAYiuWmmaRBzJuUKfIZ08h6Bv2X4Zg&s"); */
+      background-size: cover;
+      background-position: center;
+      box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    }
+
+    .decorative-background__cover {
+      position: absolute;
+      top: -0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: aqua;
+      /* background: linear-gradient(100deg, white 0%, aqua 90%); */
+      opacity: 0.6;
+      z-index: 1;
     }
 
     .site-footer > .site-info {
@@ -258,7 +339,9 @@ get_header();
     }
 </style>
 
-<div class="decorative-background"></div>
+<div class="decorative-background">
+  <div class="decorative-background__cover"></div>
+</div>
 
 <div class="sidebar">
 <?php

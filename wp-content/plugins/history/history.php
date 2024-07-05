@@ -63,14 +63,5 @@ function load_custom_page_template( $template ) {
 }
 add_filter( 'template_include', 'load_custom_page_template' );
 
-function add_cors_http_header() {
-    header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE, PUT");
-    header("Access-Control-Allow-Headers: Content-Type, Authorization");
-}
-
-add_action('init', 'add_cors_http_header');
-
-
 
 
