@@ -655,19 +655,4 @@ if ( ! function_exists( 'wp_get_list_item_separator' ) ) :
 	}
 endif;
 
-function initCors($value) {
-    // Set the CORS headers
-    $origin_url = '*';
-    header('Access-Control-Allow-Origin: ' . $origin_url);
-    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-    header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Allow-Headers: X-Requested-With, Content-Type, Authorization');
-    return $value;
-}
-
-add_action('rest_api_init', function() {
-    remove_filter('rest_pre_serve_request', 'rest_send_cors_headers');
-    add_filter('rest_pre_serve_request', 'initCors');
-}, 15);
-
 
