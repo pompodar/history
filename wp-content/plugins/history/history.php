@@ -70,6 +70,11 @@ add_action('rest_api_init', function () {
         'callback' => 'get_all_posts',
     ));
 
+    register_rest_route('custom/v1', '/articles_by_cat', array(
+        'methods'  => 'GET',
+        'callback' => 'get_all_posts_by_cat',
+    ));
+
     register_rest_route('custom/v1', '/categories', array(
         'methods'  => 'GET',
         'callback' => 'get_all_categories',
@@ -82,8 +87,8 @@ add_action('rest_api_init', function () {
  * @return WP_REST_Response
  */
 function get_all_posts($request) {
-    $paged = $request->get_param('page') ?: 1; // Get the current page from the request, default to page 1
-    $posts_per_page = $request->get_param('per_page') ?: 10; // Get posts per page from the request, default to 10
+    $paged = $request->get_param('page') ?: 1; 
+    $posts_per_page = $request->get_param('per_page') ?: 3;
 
     $args = array(
         'post_type'      => 'post',
@@ -146,15 +151,89 @@ function get_all_posts($request) {
 
     wp_reset_postdata();
 
-    // Calculate total pages
-    $total_pages = $query->max_num_pages;
-
     // Prepare response with pagination headers
     $response = new WP_REST_Response($posts, 200);
 
     return $response;
 }
 
+/**
+ * Get all posts callback function
+ *
+ * @return WP_REST_Response
+ */
+function get_all_posts_by_cat($request) {
+    $cat_id = $request->get_param('cat') ?: ''; 
+    $paged = $request->get_param('page') ?: 1; 
+    $posts_per_page = $request->get_param('per_page') ?: 3;
+
+    $args = array(
+        'post_type'      => 'post',
+        'post_status'    => 'publish',
+        'cat'  => $cat_id,
+        'posts_per_page' => $posts_per_page,
+        'paged'          => $paged,
+    );
+
+    $query = new WP_Query($args);
+
+    if (!$query->have_posts()) {
+        return new WP_REST_Response([], 200);
+    }
+
+    $posts = array();
+    while ($query->have_posts()) {
+        $query->the_post();
+        $categories = get_the_category();
+        
+        $category_data = array_map(function($cat) {
+            $ancestors = get_ancestors($cat->term_id, 'category');
+            $ancestor_data = array_map(function($ancestor_id) {
+                $ancestor = get_category($ancestor_id);
+                return array(
+                    'id'   => $ancestor->term_id,
+                    'name' => $ancestor->name,
+                );
+            }, $ancestors);
+            
+            $descendants = get_term_children($cat->term_id, 'category');
+            $descendant_data = array_map(function($descendant_id) {
+                $descendant = get_category($descendant_id);
+                return array(
+                    'id'   => $descendant->term_id,
+                    'name' => $descendant->name,
+                );
+            }, $descendants);
+
+            return array(
+                'id'        => $cat->term_id,
+                'name'      => $cat->name,
+                'ancestors' => $ancestor_data,
+                'descendants' => $descendant_data,
+            );
+        }, $categories);
+
+        $posts[] = array(
+            'id'         => get_the_ID(),
+            'title'      => get_the_title(),
+            'content'    => get_the_content(),
+            'excerpt'    => get_the_excerpt(),
+            'categories' => $category_data,
+            'date'       => get_the_date(),
+            'link'       => get_permalink(),
+            'total_posts' => $query->found_posts,
+            'total_pages'   => $query->max_num_pages,
+        );
+
+    }
+
+    wp_reset_postdata();
+
+    // Prepare response with pagination headers
+    $response = new WP_REST_Response($posts, 200);
+
+    return $response;
+}
 
 /**
  * Get all categories callback function
