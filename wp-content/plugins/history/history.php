@@ -63,7 +63,6 @@ function load_custom_page_template( $template ) {
 }
 add_filter( 'template_include', 'load_custom_page_template' );
 
-// Hook into the REST API initialization action
 add_action('rest_api_init', function () {
     register_rest_route('custom/v1', '/articles_by_cat', array(
         'methods'  => 'GET',
@@ -75,6 +74,13 @@ add_action('rest_api_init', function () {
     register_rest_route('custom/v1', '/categories', array(
         'methods'  => 'GET',
         'callback' => 'get_all_categories',
+        'permission_callback' => '__return_true'
+
+    ));
+
+    register_rest_route('custom/v1', '/media', array(
+        'methods'  => 'GET',
+        'callback' => 'get_all_media',
         'permission_callback' => '__return_true'
 
     ));
@@ -230,6 +236,86 @@ add_action('rest_api_init', function() {
     remove_filter('rest_pre_serve_request', 'rest_send_cors_headers');
     add_filter('rest_pre_serve_request', 'initCors');
 }, 15);
+
+function create_media_categories() {
+    register_taxonomy(
+        'media_category',
+        'attachment',
+        array(
+            'label' => __('Media Categories'),
+            'rewrite' => array('slug' => 'media-category'),
+            'hierarchical' => true,
+        )
+    );
+}
+add_action('init', 'create_media_categories');
+
+function add_media_categories_metabox() {
+    register_taxonomy_for_object_type('media_category', 'attachment');
+}
+add_action('admin_init', 'add_media_categories_metabox');
+
+function restrict_media_by_category() {
+    if (isset($_GET['post_type']) && $_GET['post_type'] == 'attachment') {
+        $selected = isset($_GET['media_category']) ? $_GET['media_category'] : '';
+        wp_dropdown_categories(array(
+            'show_option_all' => __('Show All Media Categories'),
+            'taxonomy' => 'media_category',
+            'name' => 'media_category',
+            'orderby' => 'name',
+            'selected' => $selected,
+            'hierarchical' => true,
+            'depth' => 3,
+            'show_count' => true,
+            'hide_empty' => true,
+        ));
+    }
+}
+add_action('restrict_manage_posts', 'restrict_media_by_category');
+
+function get_all_media($request) {
+    $category_slug = $request->get_param('category_slug') ?: ''; 
+
+    $args = array(
+        'post_type' => 'attachment',
+        'tax_query' => array(
+            array(
+                'taxonomy' => 'media_category',
+                'field' => 'slug',
+                'terms' => $category_slug,
+            ),
+        ),
+        'posts_per_page' => -1,
+    );
+
+    $media_items = array();
+
+    $attachments = get_posts($args);
+    if ($attachments) {
+        foreach ($attachments as $post) {
+            $media_items[] = array(
+                'ID' => $post->ID,
+                'title' => $post->post_title,
+                'url' => wp_get_attachment_url($post->ID),
+            );
+        }
+    }
+
+    if (empty($media_items)) {
+        return new WP_Error('no_media', 'No media found for this category', array('status' => 404));
+    }
+
+    return new WP_REST_Response($media_items, 200);
+}
+
+add_action('rest_api_init', function () {
+    register_rest_route('media-categories/v1', '/media', array(
+        'methods' => 'GET',
+        'callback' => 'get_all_media',
+    ));
+});
+
+
 
 
 
