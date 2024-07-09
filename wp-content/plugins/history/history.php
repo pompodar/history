@@ -99,10 +99,17 @@ function get_all_posts_by_cat($request) {
     $args = array(
         'post_type'      => 'post',
         'post_status'    => 'publish',
-        'cat'  => $cat_id,
         'posts_per_page' => $posts_per_page,
         'paged'          => $paged,
-    );
+        'tax_query'      => array(
+            array(
+                'taxonomy' => 'category',
+                'field'    => 'term_id',
+                'terms'    => $cat_id,
+                'include_children' => false,
+            ),
+        ),
+    );    
 
     $query = new WP_Query($args);
 
@@ -187,19 +194,15 @@ function get_all_categories() {
             'count' => $category->count,
         );
 
-        // Check if the category has parent
         if ($category->parent === 0) {
-            // It's a top-level category, add it directly
             $cat['parent_id'] = null;
         } else {
-            // Get parent category information
             $parent_category = get_category($category->parent);
             $cat['parent_id'] = $parent_category->term_id;
             $cat['parent_name'] = $parent_category->name;
             $cat['parent_slug'] = $parent_category->slug;
         }
 
-        // Get children categories recursively
         $children = get_categories(array(
             'hide_empty' => false,
             'parent'     => $category->term_id,
@@ -307,13 +310,6 @@ function get_all_media($request) {
 
     return new WP_REST_Response($media_items, 200);
 }
-
-add_action('rest_api_init', function () {
-    register_rest_route('media-categories/v1', '/media', array(
-        'methods' => 'GET',
-        'callback' => 'get_all_media',
-    ));
-});
 
 
 
